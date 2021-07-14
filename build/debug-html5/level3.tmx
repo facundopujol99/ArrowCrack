@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="150" height="120" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="40">
  <tileset firstgid="1" name="Tiles" tilewidth="16" tileheight="16" tilecount="192" columns="32">
-  <image source="tiles.png" width="512" height="96"/>
+  <image source="../../Obligatorio2/Assets/tiles.png" width="512" height="96"/>
  </tileset>
  <layer id="1" name="Floor" width="150" height="120">
   <properties>
@@ -506,10 +506,10 @@
 </data>
  </layer>
  <objectgroup id="3" name="level">
-  <object id="1" name="keyPosition" x="2180" y="473"/>
-  <object id="2" name="playerPosition" x="415.394" y="1800.88"/>
+  <object id="1" name="keyPosition" x="2201.58" y="508.879"/>
+  <object id="2" name="playerPosition" x="410.303" y="1834.82"/>
   <object id="3" name="shop" x="480.25" y="768.833" width="128.333" height="127.667"/>
-  <object id="4" name="winZone" x="1823.66" y="16.1667" width="112" height="127.925"/>
+  <object id="4" name="winZone" x="1823.66" y="16.1667" width="114.667" height="158.592"/>
   <object id="5" x="1427.27" y="2066.67"/>
   <object id="16" name="spiderPosition" x="149.333" y="1038.67" width="34.6667" height="32.6667"/>
   <object id="17" name="spiderPosition" x="207.333" y="1039" width="34.6667" height="32.6667"/>

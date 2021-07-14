@@ -39,29 +39,31 @@ class Shop extends Entity {
 	}
 
 	function shopVsArcher(archerCollider:ICollider, shopCollider:ICollider) {
-		text.text = "For 1 Coin I can give you \n 1 - Speed \n 2 - Fire Rate \n And for 2 \n 3 - Health (2 Coins)";
+		text.text = "Key to press and price \n 1 - Speed \n 2 - Fire Rate \n And for 3 \n 3 - Health";
 		if (GlobalGameData.coins > 0) {
 			if (Input.i.isKeyCodePressed(KeyCode.One)) {
 				SM.playFx("coin_drop");
-				GlobalGameData.speed += 25;
+				GlobalGameData.speed += 20;
 				GlobalGameData.coins--;
 			}
 			if (Input.i.isKeyCodePressed(KeyCode.Two)) {
-				SM.playFx("coin_drop");
-				GlobalGameData.fireRate -= 10;
-				GlobalGameData.coins--;
+				if (GlobalGameData.coins > 1) {
+					SM.playFx("coin_drop");
+					GlobalGameData.fireRate -= 6;
+					GlobalGameData.coins-= 2;
+				}
 			}
 			if (Input.i.isKeyCodePressed(KeyCode.Three)) {
-				if (GlobalGameData.coins > 1) {
+				if (GlobalGameData.coins > 2) {
 					SM.playFx("coin_drop");
 					GlobalGameData.totalLife += 1;
 					GlobalGameData.currentLife += 1;
-					GlobalGameData.coins -= 2;
+					GlobalGameData.coins -= 3;
 				}
 			}
-		}else{
-            text.text = " Bring me some Coins!";
-        }
+		} else {
+			text.text = " Bring me some Coins!";
+		}
 	}
 
 	function HideText() {

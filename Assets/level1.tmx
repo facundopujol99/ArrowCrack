@@ -115,7 +115,7 @@
 </data>
  </layer>
  <objectgroup id="8" name="levelPosition">
-  <object id="24" name="keyPosition" x="90.4375" y="723" width="10.1875" height="13.5"/>
+  <object id="24" name="keyPosition" x="79.4375" y="671" width="10.1875" height="13.5"/>
   <object id="25" name="winZone" x="672.898" y="0.363636" width="46.375" height="95.3864"/>
   <object id="27" name="shop" x="431.818" y="0.181818" width="130.087" height="95.18"/>
  </objectgroup>
@@ -139,6 +139,6 @@
   </object>
  </objectgroup>
  <objectgroup id="2" name="playerPosition">
-  <object id="1" name="playerPosition" type="playerPosition" x="635.667" y="113.027" width="31" height="29.75"/>
+  <object id="1" name="playerPosition" type="playerPosition" x="704.667" y="713.027" width="31" height="29.75"/>
  </objectgroup>
 </map>

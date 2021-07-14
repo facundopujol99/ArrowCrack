@@ -13,7 +13,7 @@ class Ray extends Entity {
     override public function new(x: Float, y:Float, dirX : Float, dirY : Float) {
         super();
         collision = new CollisionBox();
-        collision.width = 20;
+        collision.width = 80;
         collision.height = 20;
 		collision.x=x;
 		collision.y=y;

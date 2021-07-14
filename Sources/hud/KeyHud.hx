@@ -19,13 +19,11 @@ class KeyHud extends Entity {
 		display.x = 120;
 	}
 
-	override function update(dt:Float) {
-		super.update(dt);
-		if (!picked) {
-			if (GlobalGameData.pickedKey) {
-				hudLayer.addChild(display);
-				picked = true;
-			}
-		}
+	public static function pickedkey() {
+		hudLayer.addChild(display);
+	}
+
+	public static function nextLevel() {
+		display.removeFromParent();
 	}
 }

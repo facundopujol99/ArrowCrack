@@ -40,6 +40,8 @@ class GameState extends State {
 	var archerMap:TileMapDisplay;
 	var levelArray = ["level1_tmx","level2_tmx","level3_tmx"];
 	var currentLevel = GlobalGameData.level;
+	public static var startingX : Float = 0;
+	public static var startingY : Float = 0;
 
 	override function load(resources:Resources) {
 		super.load(resources);
@@ -54,6 +56,8 @@ class GameState extends State {
 		resources.add(new SoundLoader("arrow_release"));
 		resources.add(new SoundLoader("coin_drop"));
 		resources.add(new SoundLoader("squeak"));
+		resources.add(new SoundLoader("key_pick_up"));
+		resources.add(new SoundLoader("door_open"));
 		var atlas = new JoinAtlas(2048, 2048);
 		atlas.add(new FontLoader("SEASRN",48));
 		atlas.add(new FontLoader("AMATIC",25));
@@ -129,6 +133,8 @@ class GameState extends State {
 	function parseMapObjects(layerTilemap:Tilemap, object:TmxObject) {
 		if (compareName(object, "playerPosition")) {
 			if (GlobalGameData.archer == null) {
+				startingX = object.x;
+				startingY = object.y;
 				var archer = new Archer(object.x, object.y, simulationLayer);
 				GlobalGameData.archer = archer;
 				addChild(archer);
@@ -190,5 +196,12 @@ class GameState extends State {
 		simulationLayer.addChild(layerTilemap.createDisplay(tileLayer, new Sprite("tiles")));
 		archerMap = layerTilemap.createDisplay((tileLayer), new Sprite("tiles"));
 		simulationLayer.addChild(archerMap);
+	}
+
+	public static function ArcherDeath() {
+		GlobalGameData.currentLife = GlobalGameData.totalLife;
+		GlobalGameData.coins = 0;
+		GlobalGameData.archer.collision.x = startingX;
+		GlobalGameData.archer.collision.y = startingY;
 	}
 }

@@ -11,7 +11,7 @@ class TankShot extends Entity {
     var dir: FastVector2;
     public var display:Sprite;
 	public var collision:CollisionBox;
-    public var SPEED:Float = 100;
+    public var SPEED:Float = 150;
     private var lifetime = 240; 
 
     override public function new(x: Float, y:Float, dirX : Float, dirY : Float, collisionGroup : CollisionGroup, layer : Layer) {

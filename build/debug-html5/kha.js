@@ -20055,10 +20055,12 @@ gameObjects_GlobalGameData.nextLevel = function() {
 	gameObjects_GlobalGameData.spiderColliders.clear();
 	gameObjects_GlobalGameData.rayColliders.clear();
 	gameObjects_GlobalGameData.archer = null;
+	gameObjects_GlobalGameData.winZone = null;
 	gameObjects_GlobalGameData.key = null;
 	gameObjects_GlobalGameData.shop = null;
 	gameObjects_GlobalGameData.camera = null;
 	gameObjects_GlobalGameData.pickedKey = false;
+	hud_KeyHud.nextLevel();
 };
 var gameObjects_Key = function(x,y,layer) {
 	com_framework_utils_Entity.call(this);
@@ -20098,7 +20100,7 @@ var gameObjects_Ray = function(x,y,dirX,dirY) {
 	this.SPEED = 1000;
 	com_framework_utils_Entity.call(this);
 	this.collision = new com_collision_platformer_CollisionBox();
-	this.collision.width = 20;
+	this.collision.width = 80;
 	this.collision.height = 20;
 	this.collision.x = x;
 	this.collision.y = y;
@@ -20189,24 +20191,26 @@ gameObjects_Shop.prototype = $extend(com_framework_utils_Entity.prototype,{
 		}
 	}
 	,shopVsArcher: function(archerCollider,shopCollider) {
-		this.text.set_text("For 1 Coin I can give you \n 1 - Speed \n 2 - Fire Rate \n And for 2 \n 3 - Health (2 Coins)");
+		this.text.set_text("Key to press and price \n 1 - Speed \n 2 - Fire Rate \n And for 3 \n 3 - Health");
 		if(gameObjects_GlobalGameData.coins > 0) {
 			if(com_framework_utils_Input.i.isKeyCodePressed(49)) {
 				com_soundLib_SoundManager.playFx("coin_drop");
-				gameObjects_GlobalGameData.speed += 25;
+				gameObjects_GlobalGameData.speed += 20;
 				gameObjects_GlobalGameData.coins--;
 			}
 			if(com_framework_utils_Input.i.isKeyCodePressed(50)) {
-				com_soundLib_SoundManager.playFx("coin_drop");
-				gameObjects_GlobalGameData.fireRate -= 10;
-				gameObjects_GlobalGameData.coins--;
+				if(gameObjects_GlobalGameData.coins > 1) {
+					com_soundLib_SoundManager.playFx("coin_drop");
+					gameObjects_GlobalGameData.fireRate -= 6;
+					gameObjects_GlobalGameData.coins -= 2;
+				}
 			}
 			if(com_framework_utils_Input.i.isKeyCodePressed(51)) {
-				if(gameObjects_GlobalGameData.coins > 1) {
+				if(gameObjects_GlobalGameData.coins > 2) {
 					com_soundLib_SoundManager.playFx("coin_drop");
 					gameObjects_GlobalGameData.totalLife += 1;
 					gameObjects_GlobalGameData.currentLife += 1;
-					gameObjects_GlobalGameData.coins -= 2;
+					gameObjects_GlobalGameData.coins -= 3;
 				}
 			}
 		} else {
@@ -20220,7 +20224,7 @@ gameObjects_Shop.prototype = $extend(com_framework_utils_Entity.prototype,{
 });
 var gameObjects_TankShot = function(x,y,dirX,dirY,collisionGroup,layer) {
 	this.lifetime = 240;
-	this.SPEED = 100;
+	this.SPEED = 150;
 	com_framework_utils_Entity.call(this);
 	this.display = new com_gEngine_display_Sprite("tankshot");
 	this.display.set_smooth(false);
@@ -20330,6 +20334,7 @@ gameObjects_WinZone.prototype = $extend(com_framework_utils_Entity.prototype,{
 		if(gameObjects_GlobalGameData.pickedKey) {
 			this.text.set_text("Space to end level");
 			if(com_framework_utils_Input.i.isKeyCodePressed(32)) {
+				com_soundLib_SoundManager.playFx("door_open");
 				gameObjects_GlobalGameData.level++;
 			}
 		} else {
@@ -23337,18 +23342,15 @@ var hud_KeyHud = function(layer) {
 };
 $hxClasses["hud.KeyHud"] = hud_KeyHud;
 hud_KeyHud.__name__ = "hud.KeyHud";
+hud_KeyHud.pickedkey = function() {
+	hud_KeyHud.hudLayer.addChild(hud_KeyHud.display);
+};
+hud_KeyHud.nextLevel = function() {
+	hud_KeyHud.display.removeFromParent();
+};
 hud_KeyHud.__super__ = com_framework_utils_Entity;
 hud_KeyHud.prototype = $extend(com_framework_utils_Entity.prototype,{
-	update: function(dt) {
-		com_framework_utils_Entity.prototype.update.call(this,dt);
-		if(!hud_KeyHud.picked) {
-			if(gameObjects_GlobalGameData.pickedKey) {
-				hud_KeyHud.hudLayer.addChild(hud_KeyHud.display);
-				hud_KeyHud.picked = true;
-			}
-		}
-	}
-	,__class__: hud_KeyHud
+	__class__: hud_KeyHud
 });
 var hud_Life = function(layer) {
 	this.currentLife = gameObjects_GlobalGameData.currentLife;
@@ -23872,7 +23874,7 @@ kha__$Assets_ImageList.prototype = {
 	,__class__: kha__$Assets_ImageList
 };
 var kha__$Assets_SoundList = function() {
-	this.names = ["arrow_impact","arrow_release","coin_drop","dungeon_amb","footstep","human_hit","male_groan","squeak"];
+	this.names = ["arrow_impact","arrow_release","coin_drop","door_open","dungeon_amb","footstep","human_hit","key_pick_up","male_groan","squeak"];
 	this.squeakSize = 7053;
 	this.squeakDescription = { name : "squeak", file_sizes : [7053], files : ["squeak.ogg"], type : "sound"};
 	this.squeakName = "squeak";
@@ -23881,6 +23883,10 @@ var kha__$Assets_SoundList = function() {
 	this.male_groanDescription = { name : "male_groan", file_sizes : [8311], files : ["male_groan.ogg"], type : "sound"};
 	this.male_groanName = "male_groan";
 	this.male_groan = null;
+	this.key_pick_upSize = 11330;
+	this.key_pick_upDescription = { name : "key_pick_up", file_sizes : [11330], files : ["key_pick_up.ogg"], type : "sound"};
+	this.key_pick_upName = "key_pick_up";
+	this.key_pick_up = null;
 	this.human_hitSize = 14714;
 	this.human_hitDescription = { name : "human_hit", file_sizes : [14714], files : ["human_hit.ogg"], type : "sound"};
 	this.human_hitName = "human_hit";
@@ -23893,6 +23899,10 @@ var kha__$Assets_SoundList = function() {
 	this.dungeon_ambDescription = { name : "dungeon_amb", file_sizes : [1667360], files : ["dungeon_amb.ogg"], type : "sound"};
 	this.dungeon_ambName = "dungeon_amb";
 	this.dungeon_amb = null;
+	this.door_openSize = 16171;
+	this.door_openDescription = { name : "door_open", file_sizes : [16171], files : ["door_open.ogg"], type : "sound"};
+	this.door_openName = "door_open";
+	this.door_open = null;
 	this.coin_dropSize = 7602;
 	this.coin_dropDescription = { name : "coin_drop", file_sizes : [7602], files : ["coin_drop.ogg"], type : "sound"};
 	this.coin_dropName = "coin_drop";
@@ -23951,6 +23961,19 @@ kha__$Assets_SoundList.prototype = {
 		this.coin_drop.unload();
 		this.coin_drop = null;
 	}
+	,door_open: null
+	,door_openName: null
+	,door_openDescription: null
+	,door_openSize: null
+	,door_openLoad: function(done,failure) {
+		kha_Assets.loadSound("door_open",function(sound) {
+			done();
+		},failure,{ fileName : "kha/internal/AssetsBuilder.hx", lineNumber : 140, className : "kha._Assets.SoundList", methodName : "door_openLoad"});
+	}
+	,door_openUnload: function() {
+		this.door_open.unload();
+		this.door_open = null;
+	}
 	,dungeon_amb: null
 	,dungeon_ambName: null
 	,dungeon_ambDescription: null
@@ -23990,6 +24013,19 @@ kha__$Assets_SoundList.prototype = {
 		this.human_hit.unload();
 		this.human_hit = null;
 	}
+	,key_pick_up: null
+	,key_pick_upName: null
+	,key_pick_upDescription: null
+	,key_pick_upSize: null
+	,key_pick_upLoad: function(done,failure) {
+		kha_Assets.loadSound("key_pick_up",function(sound) {
+			done();
+		},failure,{ fileName : "kha/internal/AssetsBuilder.hx", lineNumber : 140, className : "kha._Assets.SoundList", methodName : "key_pick_upLoad"});
+	}
+	,key_pick_upUnload: function() {
+		this.key_pick_up.unload();
+		this.key_pick_up = null;
+	}
 	,male_groan: null
 	,male_groanName: null
 	,male_groanDescription: null
@@ -24021,12 +24057,12 @@ kha__$Assets_SoundList.prototype = {
 };
 var kha__$Assets_BlobList = function() {
 	this.names = ["level1_tmx","level2_tmx","level3_tmx"];
-	this.level3_tmxSize = 168292;
-	this.level3_tmxDescription = { name : "level3_tmx", file_sizes : [168292], files : ["level3.tmx"], type : "blob"};
+	this.level3_tmxSize = 168329;
+	this.level3_tmxDescription = { name : "level3_tmx", file_sizes : [168329], files : ["level3.tmx"], type : "blob"};
 	this.level3_tmxName = "level3_tmx";
 	this.level3_tmx = null;
-	this.level2_tmxSize = 85899;
-	this.level2_tmxDescription = { name : "level2_tmx", file_sizes : [85899], files : ["level2.tmx"], type : "blob"};
+	this.level2_tmxSize = 85907;
+	this.level2_tmxDescription = { name : "level2_tmx", file_sizes : [85907], files : ["level2.tmx"], type : "blob"};
 	this.level2_tmxName = "level2_tmx";
 	this.level2_tmx = null;
 	this.level1_tmxSize = 16560;
@@ -54024,10 +54060,12 @@ logics_Collisions.collisions = function() {
 	com_collision_platformer_CollisionEngine.overlap(gameObjects_GlobalGameData.tankColliders,gameObjects_GlobalGameData.archer.arrowCollisions,logics_Collisions.tankVsArrow);
 	com_collision_platformer_CollisionEngine.overlap(gameObjects_GlobalGameData.shotsColliders,gameObjects_GlobalGameData.archer.collision,logics_Collisions.shotVsArcher);
 	com_collision_platformer_CollisionEngine.overlap(gameObjects_GlobalGameData.tankColliders,gameObjects_GlobalGameData.archer.collision,logics_Collisions.tankVsArcher);
+	com_collision_platformer_CollisionEngine.overlap(gameObjects_GlobalGameData.spiderColliders,gameObjects_GlobalGameData.archer.collision,logics_Collisions.tankVsArcher);
 	com_collision_platformer_CollisionEngine.overlap(gameObjects_GlobalGameData.rayColliders,gameObjects_GlobalGameData.archer.collision,logics_Collisions.rayVsArcher);
 	com_collision_platformer_CollisionEngine.overlap(gameObjects_GlobalGameData.rayColliders,logics_Collisions.worldMap.collision,logics_Collisions.rayVsWall);
 	com_collision_platformer_CollisionEngine.overlap(gameObjects_GlobalGameData.spiderColliders,gameObjects_GlobalGameData.archer.arrowCollisions,logics_Collisions.spiderVsArrow);
 	com_collision_platformer_CollisionEngine.overlap(gameObjects_GlobalGameData.key.collision,gameObjects_GlobalGameData.archer.collision,logics_Collisions.keyVsArcher);
+	logics_Collisions.canReciveDamage++;
 };
 logics_Collisions.arrowVsWall = function(wallCollider,arrowCollider) {
 	var arrow = arrowCollider.userData;
@@ -54065,21 +54103,13 @@ logics_Collisions.spiderVsArrow = function(spiderCollider,arrowCollider) {
 	gameObjects_GlobalGameData.coins++;
 };
 logics_Collisions.tankVsArcher = function(tankCollider,archerCollider) {
-	com_soundLib_SoundManager.playFx("human_hit");
-	var archer = archerCollider.userData;
-	if(gameObjects_GlobalGameData.currentLife > 0) {
-		gameObjects_GlobalGameData.currentLife -= 0.5;
-	}
+	logics_Collisions.HitArcher();
 };
 logics_Collisions.shotVsArcher = function(shotCollider,archerCollider) {
-	com_soundLib_SoundManager.playFx("human_hit");
-	var archer = archerCollider.userData;
 	var shot = shotCollider.userData;
 	shot.destroy();
 	shot.die();
-	if(gameObjects_GlobalGameData.currentLife > 0) {
-		gameObjects_GlobalGameData.currentLife -= 0.5;
-	}
+	logics_Collisions.HitArcher();
 };
 logics_Collisions.rayVsArcher = function(rayCollider,archerCollider) {
 	var archer = archerCollider.userData;
@@ -54090,9 +54120,25 @@ logics_Collisions.rayVsArcher = function(rayCollider,archerCollider) {
 	ray.die();
 };
 logics_Collisions.keyVsArcher = function(keyCollider,archerCollider) {
-	gameObjects_GlobalGameData.pickedKey = true;
-	gameObjects_GlobalGameData.key.destroy();
-	gameObjects_GlobalGameData.key.die();
+	if(!gameObjects_GlobalGameData.pickedKey) {
+		com_soundLib_SoundManager.playFx("key_pick_up");
+		hud_KeyHud.pickedkey();
+		gameObjects_GlobalGameData.pickedKey = true;
+		gameObjects_GlobalGameData.key.destroy();
+		gameObjects_GlobalGameData.key.die();
+	}
+};
+logics_Collisions.HitArcher = function() {
+	if(logics_Collisions.canReciveDamage >= 40) {
+		if(gameObjects_GlobalGameData.currentLife > 0) {
+			com_soundLib_SoundManager.playFx("human_hit");
+			gameObjects_GlobalGameData.currentLife -= 0.5;
+			logics_Collisions.canReciveDamage = 0;
+		} else {
+			states_GameState.ArcherDeath();
+			logics_Collisions.canReciveDamage = 0;
+		}
+	}
 };
 var paths_Path = function() { };
 $hxClasses["paths.Path"] = paths_Path;
@@ -54249,6 +54295,12 @@ var states_GameState = function() {
 };
 $hxClasses["states.GameState"] = states_GameState;
 states_GameState.__name__ = "states.GameState";
+states_GameState.ArcherDeath = function() {
+	gameObjects_GlobalGameData.currentLife = gameObjects_GlobalGameData.totalLife;
+	gameObjects_GlobalGameData.coins = 0;
+	gameObjects_GlobalGameData.archer.collision.x = states_GameState.startingX;
+	gameObjects_GlobalGameData.archer.collision.y = states_GameState.startingY;
+};
 states_GameState.__super__ = com_framework_utils_State;
 states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 	simulationLayer: null
@@ -54269,6 +54321,8 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 		resources.add(new com_loading_basicResources_SoundLoader("arrow_release"));
 		resources.add(new com_loading_basicResources_SoundLoader("coin_drop"));
 		resources.add(new com_loading_basicResources_SoundLoader("squeak"));
+		resources.add(new com_loading_basicResources_SoundLoader("key_pick_up"));
+		resources.add(new com_loading_basicResources_SoundLoader("door_open"));
 		var atlas = new com_loading_basicResources_JoinAtlas(2048,2048);
 		atlas.add(new com_loading_basicResources_FontLoader("SEASRN",48));
 		atlas.add(new com_loading_basicResources_FontLoader("AMATIC",25));
@@ -54318,6 +54372,8 @@ states_GameState.prototype = $extend(com_framework_utils_State.prototype,{
 	,parseMapObjects: function(layerTilemap,object) {
 		if(object.name.toLowerCase() == "playerPosition".toLowerCase()) {
 			if(gameObjects_GlobalGameData.archer == null) {
+				states_GameState.startingX = object.x;
+				states_GameState.startingY = object.y;
 				var archer = new gameObjects_Archer(object.x,object.y,this.simulationLayer);
 				gameObjects_GlobalGameData.archer = archer;
 				this.addChild(archer);
@@ -54452,11 +54508,11 @@ gameObjects_GlobalGameData.spiderColliders = new com_collision_platformer_Collis
 gameObjects_GlobalGameData.rayColliders = new com_collision_platformer_CollisionGroup();
 gameObjects_GlobalGameData.totalLife = 3;
 gameObjects_GlobalGameData.currentLife = gameObjects_GlobalGameData.totalLife;
-gameObjects_GlobalGameData.coins = 1;
+gameObjects_GlobalGameData.coins = 0;
 gameObjects_GlobalGameData.speed = 200;
 gameObjects_GlobalGameData.fireRate = 90;
 gameObjects_GlobalGameData.level = 1;
-gameObjects_GlobalGameData.pickedKey = true;
+gameObjects_GlobalGameData.pickedKey = false;
 gameObjects_GlobalGameData.nearShop = false;
 haxe_Unserializer.DEFAULT_RESOLVER = new haxe__$Unserializer_DefaultResolver();
 haxe_Unserializer.BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%:";
@@ -54785,6 +54841,9 @@ kha_netsync_Session.RPC_SERVER = 0;
 kha_netsync_Session.RPC_ALL = 1;
 kha_netsync_SyncBuilder.nextId = 0;
 kha_netsync_SyncBuilder.objects = [];
+logics_Collisions.canReciveDamage = 0;
+states_GameState.startingX = 0;
+states_GameState.startingY = 0;
 Main.main();
 })(typeof exports != "undefined" ? exports : typeof window != "undefined" ? window : typeof self != "undefined" ? self : this, typeof window != "undefined" ? window : typeof global != "undefined" ? global : typeof self != "undefined" ? self : this);
 

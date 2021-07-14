@@ -323,6 +323,16 @@
 			"type": "sound"
 		},
 		{
+			"name": "door_open",
+			"files": [
+				"door_open.ogg"
+			],
+			"file_sizes": [
+				16171
+			],
+			"type": "sound"
+		},
+		{
 			"name": "dungeon_amb",
 			"files": [
 				"dungeon_amb.ogg"
@@ -619,6 +629,16 @@
 			"original_height": 16
 		},
 		{
+			"name": "key_pick_up",
+			"files": [
+				"key_pick_up.ogg"
+			],
+			"file_sizes": [
+				11330
+			],
+			"type": "sound"
+		},
+		{
 			"name": "level1_tmx",
 			"files": [
 				"level1.tmx"
@@ -634,7 +654,7 @@
 				"level2.tmx"
 			],
 			"file_sizes": [
-				85899
+				85907
 			],
 			"type": "blob"
 		},
@@ -644,7 +664,7 @@
 				"level3.tmx"
 			],
 			"file_sizes": [
-				168292
+				168329
 			],
 			"type": "blob"
 		},

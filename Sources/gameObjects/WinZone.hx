@@ -1,5 +1,6 @@
 package gameObjects;
 
+import com.soundLib.SoundManager.SM;
 import com.framework.utils.Input;
 import kha.input.KeyCode;
 import com.collision.platformer.CollisionEngine;
@@ -40,13 +41,13 @@ class WinZone extends Entity {
 		if (GlobalGameData.pickedKey) {
 			text.text = "Space to end level";
 			if (Input.i.isKeyCodePressed(KeyCode.Space)) {
+				SM.playFx("door_open");
 				GlobalGameData.level++;
 			}
 		}else{
             text.text = "Need Key";
         }
 	}
-
 	function HideText() {
 		text.text = "";
 	}
