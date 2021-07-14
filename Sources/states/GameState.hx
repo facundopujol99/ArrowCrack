@@ -1,5 +1,7 @@
 package states;
 
+import gameObjects.Sword;
+import com.gEngine.display.Text;
 import com.soundLib.SoundManager.SM;
 import com.loading.basicResources.SoundLoader;
 import com.gEngine.display.StaticLayer;
@@ -38,8 +40,9 @@ class GameState extends State {
 	var overLayer:StaticLayer;
 	var worldMap:Tilemap;
 	var archerMap:TileMapDisplay;
-	var levelArray = ["level1_tmx","level2_tmx","level3_tmx"];
+	var levelArray = ["level1_tmx", "level2_tmx", "level3_tmx"];
 	var currentLevel = GlobalGameData.level;
+
 	public static var startingX : Float = 0;
 	public static var startingY : Float = 0;
 
@@ -58,14 +61,18 @@ class GameState extends State {
 		resources.add(new SoundLoader("squeak"));
 		resources.add(new SoundLoader("key_pick_up"));
 		resources.add(new SoundLoader("door_open"));
+		resources.add(new SoundLoader("swing"));
+		resources.add(new SoundLoader("impact_sword"));
+		resources.add(new SoundLoader("sword_draw"));
 		var atlas = new JoinAtlas(2048, 2048);
-		atlas.add(new FontLoader("SEASRN",48));
-		atlas.add(new FontLoader("AMATIC",25));
+		atlas.add(new FontLoader("SEASRN", 48));
+		atlas.add(new FontLoader("AMATIC", 25));
 		atlas.add(new TilesheetLoader("tiles", 16, 16, 0));
 		atlas.add(new SpriteSheetLoader("archer", 32, 32, 0, [
 			new Sequence("idle", [0]),
-			new Sequence("charge", [1, 2, 3]),
-			new Sequence("charged", [3]),
+			new Sequence("charge", [1, 4]),
+			new Sequence("charged", [5]),
+			new Sequence("slash", [2,3]),
 		]));
 		atlas.add(new SpriteSheetLoader("spider", 32, 32, 0, [
 			new Sequence("idle", [0]),
@@ -86,45 +93,52 @@ class GameState extends State {
 		atlas.add(new ImageLoader("emptyheart"));
 		atlas.add(new ImageLoader("coin"));
 		atlas.add(new ImageLoader("key"));
+		atlas.add(new ImageLoader("sword"));
 		resources.add(atlas);
 	}
 
 	override function init() {
 		super.init();
-		stageColor(0.5, 0.5, 0.5);
+		stageColor(0.1, 0.1, 0.1);
 		simulationLayer = new Layer();
 		stage.addChild(simulationLayer);
-		
-		worldMap = new Tilemap(levelArray[GlobalGameData.level - 1]);
-		worldMap.init(parseTileLayers, parseMapObjects);
-		stage.defaultCamera().scale = 1.5;
-		stage.defaultCamera()
-			.limits(-stage.defaultCamera().width * 0.5,
-				-stage.defaultCamera().height * 0.5, worldMap.widthIntTiles * 16
-				+ stage.defaultCamera().width,
-				worldMap.heightInTiles * 16
-				+ stage.defaultCamera().height);
-		GlobalGameData.camera = stage.defaultCamera();
-		overLayer = new StaticLayer();
-		var coin = new Coin(overLayer);
-		addChild(coin);
-		var keyHud = new KeyHud(overLayer);
-		addChild(keyHud);
-		var life = new Life(overLayer);
-		addChild(life);
-		stage.addChild(overLayer);
-		Collisions.setCollisions(worldMap,archerMap);
+		if (GlobalGameData.level - 1 < levelArray.length) {
+			worldMap = new Tilemap(levelArray[GlobalGameData.level - 1]);
+			worldMap.init(parseTileLayers, parseMapObjects);
+			stage.defaultCamera().scale = 1.5;
+			stage.defaultCamera()
+				.limits(-stage.defaultCamera().width * 0.5,
+					-stage.defaultCamera().height * 0.5, worldMap.widthIntTiles * 16
+					+ stage.defaultCamera().width,
+					worldMap.heightInTiles * 16
+					+ stage.defaultCamera().height);
+			GlobalGameData.camera = stage.defaultCamera();
+			overLayer = new StaticLayer();
+			var coin = new Coin(overLayer);
+			addChild(coin);
+			var keyHud = new KeyHud(overLayer);
+			addChild(keyHud);
+			var life = new Life(overLayer);
+			addChild(life);
+			stage.addChild(overLayer);
+			Collisions.setCollisions(worldMap, archerMap);
+		}else{
+			var finishText = new Text("SEASRN");
+			finishText.text = "Thanks for playing";
+			finishText.x = 450;
+			finishText.y = 320;
+			simulationLayer.addChild(finishText);
+		}
 		SM.playMusic("dungeon_amb");
 	}
 
 	override function update(dt:Float) {
 		super.update(dt);
-		stage.defaultCamera().setTarget(GlobalGameData.archer.collision.x, GlobalGameData.archer.collision.y);
-
-
-		Collisions.collisions();
-
-		if(currentLevel != GlobalGameData.level){
+		if (GlobalGameData.level - 1 < levelArray.length) {
+				stage.defaultCamera().setTarget(GlobalGameData.archer.collision.x, GlobalGameData.archer.collision.y);
+				Collisions.collisions();
+		}
+		if (currentLevel != GlobalGameData.level) {
 			GlobalGameData.nextLevel();
 			changeState(new GameState());
 		}
@@ -146,9 +160,15 @@ class GameState extends State {
 				addChild(GlobalGameData.key);
 			}
 		}
+		if (compareName(object, "swordPosition")) {
+			if (GlobalGameData.sword == null) {
+				GlobalGameData.sword = new Sword(object.x, object.y, simulationLayer);
+				addChild(GlobalGameData.sword);
+			}
+		}
 		if (compareName(object, "spiderPosition")) {
-				var spider = new Spider(object.x, object.y, simulationLayer);
-				addChild(spider);
+			var spider = new Spider(object.x, object.y, simulationLayer);
+			addChild(spider);
 		}
 		if (compareType(object, "path")) {
 			var properties = object.properties;
@@ -167,15 +187,15 @@ class GameState extends State {
 			var tank = new Tank(path, simulationLayer);
 			addChild(tank);
 		}
-		if(compareName(object,"shop")){
-			if(GlobalGameData.shop==null){
-				GlobalGameData.shop = new Shop(object.x, object.y,object.width,object.height,simulationLayer);
+		if (compareName(object, "shop")) {
+			if (GlobalGameData.shop == null) {
+				GlobalGameData.shop = new Shop(object.x, object.y, object.width, object.height, simulationLayer);
 				addChild(GlobalGameData.shop);
 			}
 		}
-		if(compareName(object,"winZone")){
-			if(GlobalGameData.winZone==null){
-				GlobalGameData.winZone = new WinZone(object.x, object.y,object.width,object.height,simulationLayer);
+		if (compareName(object, "winZone")) {
+			if (GlobalGameData.winZone == null) {
+				GlobalGameData.winZone = new WinZone(object.x, object.y, object.width, object.height, simulationLayer);
 				addChild(GlobalGameData.winZone);
 			}
 		}

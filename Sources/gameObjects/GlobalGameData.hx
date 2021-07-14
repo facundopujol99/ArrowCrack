@@ -7,6 +7,7 @@ import com.gEngine.display.Camera;
 class GlobalGameData {
 	static public var archer:Archer;
 	static public var key:Key;
+	static public var sword:Sword;
 	static public var shop:Shop;
 	static public var camera:Camera;
 	static public var shotsColliders:CollisionGroup = new CollisionGroup();
@@ -22,13 +23,10 @@ class GlobalGameData {
 
 	public static var pickedKey:Bool = false;
 	public static var nearShop:Bool = false;
+	public static var hasSword:Bool = false;
+	public static var pickedSwordThisLevel:Bool = false;
 
 	public static var winZone:WinZone;
-
-	static public function destroy() {
-		archer = null;
-		pickedKey = false;
-	}
 
 	static public function nextLevel() {
 		shotsColliders.clear();
@@ -37,10 +35,17 @@ class GlobalGameData {
 		rayColliders.clear();
 		archer = null;
 		winZone = null;
+		sword = null;
 		key = null;
 		shop = null;
 		camera = null;
 		pickedKey = false;
+		pickedSwordThisLevel = false;
 		KeyHud.nextLevel();
+	}
+
+	public static function pickedSword() {
+		pickedSwordThisLevel = true;
+		hasSword = true;
 	}
 }

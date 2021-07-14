@@ -11,12 +11,11 @@ import com.collision.platformer.CollisionBox;
 import com.framework.utils.Entity;
 
 class WinZone extends Entity {
-
-    var collision:CollisionBox;
+	var collision:CollisionBox;
 	var text:Text;
-    
-    override public function new(x:Float, y:Float, w:Float, h:Float, layer : Layer) {
-        super();
+
+	override public function new(x:Float, y:Float, w:Float, h:Float, layer:Layer) {
+		super();
 		collision = new CollisionBox();
 		collision.width = w;
 		collision.height = h;
@@ -28,7 +27,7 @@ class WinZone extends Entity {
 		text.x = x;
 		text.y = y - 100;
 		layer.addChild(text);
-    }
+	}
 
 	override function update(dt:Float) {
 		super.update(dt);
@@ -44,12 +43,12 @@ class WinZone extends Entity {
 				SM.playFx("door_open");
 				GlobalGameData.level++;
 			}
-		}else{
-            text.text = "Need Key";
-        }
+		} else {
+			text.text = "Need Key";
+		}
 	}
+
 	function HideText() {
 		text.text = "";
 	}
-
 }

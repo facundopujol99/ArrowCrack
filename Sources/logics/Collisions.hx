@@ -10,10 +10,10 @@ import com.collision.platformer.CollisionEngine;
 import com.collision.platformer.ICollider;
 import gameObjects.enemies.Spider;
 import gameObjects.Archer;
-import gameObjects.TankShot;
+import gameObjects.projectiles.TankShot;
 import gameObjects.enemies.Tank;
-import gameObjects.Ray;
-import gameObjects.Arrow;
+import gameObjects.projectiles.Ray;
+import gameObjects.projectiles.Arrow;
 
 class Collisions {
 	public static var worldMap:Tilemap;
@@ -38,6 +38,7 @@ class Collisions {
 		CollisionEngine.overlap(GlobalGameData.rayColliders, worldMap.collision, rayVsWall);
 		CollisionEngine.overlap(GlobalGameData.spiderColliders, GlobalGameData.archer.arrowCollisions, spiderVsArrow);
 		CollisionEngine.overlap(GlobalGameData.key.collision, GlobalGameData.archer.collision, keyVsArcher);
+		CollisionEngine.overlap(GlobalGameData.sword.collision, GlobalGameData.archer.collision, swordVsArcher);
 
 		canReciveDamage++;
 	}
@@ -84,7 +85,15 @@ class Collisions {
 	}
 
 	static function tankVsArcher(tankCollider:ICollider, archerCollider:ICollider) {
-		HitArcher();
+		if(GlobalGameData.archer.slashing){
+			var tank : Tank = cast tankCollider.userData;
+			tank.destroy();
+			tank.die();
+			SM.playFx("impact_sword");
+			GlobalGameData.coins++;
+		}else{
+			HitArcher();
+		}
 	}
 
 	static function shotVsArcher(shotCollider:ICollider, archerCollider:ICollider) {
@@ -108,8 +117,19 @@ class Collisions {
 			SM.playFx("key_pick_up");
 			KeyHud.pickedkey();
 			GlobalGameData.pickedKey = true;
-			GlobalGameData.key.destroy();
 			GlobalGameData.key.die();
+			GlobalGameData.key.destroy();
+		}
+	}
+
+	static function swordVsArcher(keyCollider:ICollider, archerCollider:ICollider) {
+		if (!GlobalGameData.hasSword && !GlobalGameData.pickedSwordThisLevel) {
+			SM.playFx("sword_draw");
+			GlobalGameData.pickedSword();
+			KeyHud.pickedSword();
+			GlobalGameData.archer.pickedSword();
+			GlobalGameData.sword.destroy();
+			GlobalGameData.sword.die();
 		}
 	}
 

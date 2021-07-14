@@ -1,5 +1,6 @@
 package gameObjects.enemies;
 
+import gameObjects.projectiles.TankShot;
 import paths.Path;
 import paths.PathWalker;
 import com.collision.platformer.CollisionGroup;
@@ -19,7 +20,7 @@ class Tank extends Entity {
 	private var isCharging:Bool = false;
 	private var readyToShoot:Bool = true;
 	private var chargeTime = 0;
-	private var timeBetweenShots = 120;
+	private var timeBetweenShots = 100;
 
 	private var pathWalker:PathWalker;
 
@@ -39,14 +40,14 @@ class Tank extends Entity {
 		display.pivotY = display.height() * 0.5;
 		display.offsetY = -display.height() * 0.5;
 		display.offsetX = -display.width() * 0.5;
-		
+
 		collision.dragX = 0.5;
 		collision.dragY = 0.5;
 		collision.bounce = 1;
 		collision.userData = this;
 		GlobalGameData.tankColliders.add(collision);
 		dir = new FastVector2(1, 0);
-		pathWalker = new PathWalker(path, path.getLength()*0.01, PlayMode.Loop);
+		pathWalker = new PathWalker(path, path.getLength() * 0.015, PlayMode.Loop);
 	}
 
 	override function update(dt:Float) {
@@ -82,8 +83,8 @@ class Tank extends Entity {
 			}
 		}
 
-		display.x = collision.x + display.width()*0.5;
-		display.y = collision.y + display.height()*0.5;
+		display.x = collision.x + display.width() * 0.5;
+		display.y = collision.y + display.height() * 0.5;
 	}
 
 	override function destroy() {
@@ -104,8 +105,9 @@ class Tank extends Entity {
 	}
 
 	function shootBullet(dirBullet:FastVector2) {
-		var shot = new TankShot(collision.x + display.width()*0.5, collision.y  + display.height()*0.5, dirBullet.x, dirBullet.y, arrowCollisions, this.layer);
-		if(this.parent != null){
+		var shot = new TankShot(collision.x + display.width() * 0.5, collision.y + display.height() * 0.5, dirBullet.x, dirBullet.y, arrowCollisions,
+			this.layer);
+		if (this.parent != null) {
 			this.parent.addChild(shot);
 		}
 		chargeTime = 0;

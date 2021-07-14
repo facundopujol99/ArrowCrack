@@ -174,10 +174,10 @@
 				"archer.png"
 			],
 			"file_sizes": [
-				1951
+				3082
 			],
 			"type": "image",
-			"original_width": 64,
+			"original_width": 128,
 			"original_height": 64
 		},
 		{
@@ -617,6 +617,16 @@
 			"type": "sound"
 		},
 		{
+			"name": "impact_sword",
+			"files": [
+				"impact_sword.ogg"
+			],
+			"file_sizes": [
+				11728
+			],
+			"type": "sound"
+		},
+		{
 			"name": "key",
 			"files": [
 				"key.png"
@@ -644,7 +654,7 @@
 				"level1.tmx"
 			],
 			"file_sizes": [
-				16560
+				16617
 			],
 			"type": "blob"
 		},
@@ -654,7 +664,7 @@
 				"level2.tmx"
 			],
 			"file_sizes": [
-				85907
+				85989
 			],
 			"type": "blob"
 		},
@@ -664,7 +674,7 @@
 				"level3.tmx"
 			],
 			"file_sizes": [
-				168329
+				169074
 			],
 			"type": "blob"
 		},
@@ -2276,6 +2286,38 @@
 			],
 			"file_sizes": [
 				7053
+			],
+			"type": "sound"
+		},
+		{
+			"name": "swing",
+			"files": [
+				"swing.ogg"
+			],
+			"file_sizes": [
+				10067
+			],
+			"type": "sound"
+		},
+		{
+			"name": "sword",
+			"files": [
+				"sword.png"
+			],
+			"file_sizes": [
+				384
+			],
+			"type": "image",
+			"original_width": 32,
+			"original_height": 32
+		},
+		{
+			"name": "sword_draw",
+			"files": [
+				"sword_draw.ogg"
+			],
+			"file_sizes": [
+				8606
 			],
 			"type": "sound"
 		},

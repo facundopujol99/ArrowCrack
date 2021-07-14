@@ -50,7 +50,7 @@ class Shop extends Entity {
 				if (GlobalGameData.coins > 1) {
 					SM.playFx("coin_drop");
 					GlobalGameData.fireRate -= 6;
-					GlobalGameData.coins-= 2;
+					GlobalGameData.coins -= 2;
 				}
 			}
 			if (Input.i.isKeyCodePressed(KeyCode.Three)) {

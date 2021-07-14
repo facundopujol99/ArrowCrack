@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="150" height="100" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="43">
+<map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="150" height="100" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="44">
  <tileset firstgid="1" source="../../Tiles.tsx"/>
  <layer id="1" name="Floor" width="150" height="100">
   <properties>
@@ -248,5 +248,6 @@
   <object id="42" type="path" x="2142.67" y="125.333">
    <polygon points="0,0 144,1.33333 146.667,657.333 -1.33333,658.667 0,16"/>
   </object>
+  <object id="43" name="swordPosition" x="1964" y="688" width="36" height="44"/>
  </objectgroup>
 </map>

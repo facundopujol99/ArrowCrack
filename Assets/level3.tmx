@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="150" height="120" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="40">
+<map version="1.5" tiledversion="1.6.0" orientation="orthogonal" renderorder="right-down" width="150" height="120" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="49">
  <tileset firstgid="1" name="Tiles" tilewidth="16" tileheight="16" tilecount="192" columns="32">
   <image source="../../Obligatorio2/Assets/tiles.png" width="512" height="96"/>
  </tileset>
@@ -506,8 +506,8 @@
 </data>
  </layer>
  <objectgroup id="3" name="level">
-  <object id="1" name="keyPosition" x="2201.58" y="508.879"/>
-  <object id="2" name="playerPosition" x="410.303" y="1834.82"/>
+  <object id="1" name="keyPosition" x="2175.58" y="462.879"/>
+  <object id="2" name="playerPosition" x="414.303" y="1810.82"/>
   <object id="3" name="shop" x="480.25" y="768.833" width="128.333" height="127.667"/>
   <object id="4" name="winZone" x="1823.66" y="16.1667" width="114.667" height="158.592"/>
   <object id="5" x="1427.27" y="2066.67"/>
@@ -544,5 +544,18 @@
   <object id="39" type="path" x="1117.33" y="845.333">
    <polygon points="0,0 1.33333,192 802.667,192 800,1.33333 18.6667,0"/>
   </object>
+  <object id="41" name="spiderPosition" x="1891.33" y="623.168" width="34.6667" height="32.6667"/>
+  <object id="42" type="path" x="623" y="463">
+   <polygon points="0,0 2,160 1088,160 1089,1 15,0"/>
+  </object>
+  <object id="43" type="path" x="1134" y="463">
+   <polygon points="0,0 -512,0 -510,160 576,160 578,1 10,0"/>
+  </object>
+  <object id="44" type="path" x="1711" y="464">
+   <polygon points="0,0 -1089,-1 -1088,159 -2,160 1,10"/>
+  </object>
+  <object id="46" name="spiderPosition" x="1894.67" y="551.667" width="34.6667" height="32.6667"/>
+  <object id="47" name="spiderPosition" x="1886.67" y="473.667" width="34.6667" height="32.6667"/>
+  <object id="48" name="swordPosition" x="2010" y="1786" width="22" height="24"/>
  </objectgroup>
 </map>

@@ -1,5 +1,7 @@
 package gameObjects;
 
+import hud.KeyHud;
+import gameObjects.projectiles.Arrow;
 import com.soundLib.SoundManager.SM;
 import com.collision.platformer.CollisionGroup;
 import kha.input.KeyCode;
@@ -20,13 +22,15 @@ class Archer extends Entity {
 	private var readyToShoot:Bool = true;
 	private var chargeTime = 0;
 
+	public var slashing:Bool = false;
+	public var swordTimer = 0;
+
 	private var layer:Layer;
 
 	public function new(x:Float, y:Float, layer:Layer) {
 		super();
 		display = new Sprite("archer");
 		display.smooth = false;
-		// display.scaleX = display.scaleY = 1.5;
 		this.layer = layer;
 		layer.addChild(display);
 		collision = new CollisionBox();
@@ -59,6 +63,22 @@ class Archer extends Entity {
 		facingDir.y = mousePosition.y - collision.y;
 		facingDir.setFrom(facingDir.normalized());
 		display.rotation = Math.PI * 0.5 + Math.atan2(facingDir.y, facingDir.x);
+		if (GlobalGameData.hasSword) {
+			if (swordTimer <= 0) {
+				GlobalGameData.hasSword = false;
+				slashing = false;
+				KeyHud.dropSword();
+			} else {
+				if (Input.i.isKeyCodeDown(KeyCode.Space)) {
+					slashing = true;
+					swordTimer--;
+				} else {
+					slashing = false;
+				}
+			}
+		} else {
+			slashing = false;
+		}
 
 		if (Input.i.isMouseDown()) {
 			if (chargeTime <= GlobalGameData.fireRate) {
@@ -67,7 +87,6 @@ class Archer extends Entity {
 				shootArrow();
 			}
 		}
-
 		var dir:FastVector2 = new FastVector2();
 		if (Input.i.isKeyCodeDown(KeyCode.W)) {
 			dir.y += -1;
@@ -91,26 +110,28 @@ class Archer extends Entity {
 			var finalVelocity = dir.normalized().mult(GlobalGameData.speed);
 			collision.velocityX = finalVelocity.x;
 			collision.velocityY = finalVelocity.y;
-			
 		}
 	}
 
 	override function render() {
 		super.render();
-		// var s = Math.abs(collision.velocityX / collision.maxVelocityX);
-		// display.timeline.frameRate = (1 / 24) * s + (1 - s) * (1 / 10);
-		if (collision.velocityX == 0 || chargeTime == 0) {
-			display.timeline.playAnimation("idle");
-		}
-		if (Input.i.isMouseDown() && chargeTime <= GlobalGameData.fireRate * 0.3 && readyToShoot) {
-			display.timeline.playAnimation("charge");
-		}
-		if (Input.i.isMouseDown() && chargeTime >= GlobalGameData.fireRate * 0.3 && readyToShoot) {
-			display.timeline.playAnimation("charged");
+		if (Input.i.isKeyCodeDown(KeyCode.Space) && GlobalGameData.hasSword) {
+			display.timeline.playAnimation("slash");
+			SM.playFx("swing");
+		} else {
+			if (collision.velocityX == 0 || chargeTime == 0) {
+				display.timeline.playAnimation("idle");
+			}
+			if (Input.i.isMouseDown() && chargeTime <= GlobalGameData.fireRate * 0.3 && readyToShoot) {
+				display.timeline.playAnimation("charge");
+			}
+			if (Input.i.isMouseDown() && chargeTime >= GlobalGameData.fireRate * 0.3 && readyToShoot) {
+				display.timeline.playAnimation("charged");
+			}
 		}
 
-		display.x = collision.x + display.width()*0.5;
-		display.y = collision.y + display.height()*0.5;
+		display.x = collision.x + display.width() * 0.5;
+		display.y = collision.y + display.height() * 0.5;
 	}
 
 	override function destroy() {
@@ -119,12 +140,15 @@ class Archer extends Entity {
 		this.display.removeFromParent();
 	}
 
-	function shootArrow()
-	{
+	function shootArrow() {
 		SM.playFx("arrow_release");
 		var arrow = new Arrow(collision.x, collision.y, facingDir.x, facingDir.y, arrowCollisions, this.layer);
 		addChild(arrow);
 		chargeTime = 0;
 		readyToShoot = false;
+	}
+
+	public function pickedSword() {
+		swordTimer = 360;
 	}
 }
